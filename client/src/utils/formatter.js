@@ -1,5 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-export const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP || '6281234567890';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+export const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP || '6285640194447';
 
 export const formatRupiah = (number) => {
   const value = Number(number) || 0;
