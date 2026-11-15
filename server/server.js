@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const serverless = require('serverless-http');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -45,4 +44,4 @@ if (!isVercel) {
   ensureDefaultAdmin().catch((err) => console.error('Gagal init admin:', err));
 }
 
-module.exports = serverless(app);
+module.exports = app;
