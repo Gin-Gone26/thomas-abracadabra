@@ -3,12 +3,21 @@ const path = require('path');
 const db = require('../config/db');
 
 const removeFileIfExists = (imageUrl) => {
-  if (!imageUrl) return;
-  const filename = path.basename(imageUrl);
-  const filePath = path.join(__dirname, '../uploads', filename);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
+  if (!imageUrl || imageUrl.startsWith('data:')) return;
+  try {
+    const filename = path.basename(imageUrl);
+    const filePath = path.join(__dirname, '../uploads', filename);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  } catch (err) {
+    // Abaikan jika berjalan di environment serverless read-only
   }
+};
+
+const fileToBase64 = (file) => {
+  if (!file || !file.buffer) return null;
+  return `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
 };
 
 const getAllCharacters = async (req, res) => {
@@ -30,7 +39,7 @@ const createCharacter = async (req, res) => {
     return res.status(400).json({ message: 'Nama karakter wajib diisi.' });
   }
 
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+  const imageUrl = req.file ? fileToBase64(req.file) : null;
   const parsedPrice = Number(price) || 0;
   const availableFlag = is_available === 'false' || is_available === false ? 0 : 1;
 
@@ -61,7 +70,7 @@ const updateCharacter = async (req, res) => {
 
     if (req.file) {
       removeFileIfExists(current.image_url);
-      imageUrl = `/uploads/${req.file.filename}`;
+      imageUrl = fileToBase64(req.file);
     }
 
     const parsedPrice = price !== undefined ? Number(price) : current.price;
