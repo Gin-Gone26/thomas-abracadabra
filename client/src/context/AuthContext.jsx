@@ -3,9 +3,9 @@ import { createContext, useContext, useState } from 'react';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [token, setToken] = useState(() => localStorage.getItem('abracadabra_admin_token'));
   const [admin, setAdmin] = useState(() => {
-    const saved = localStorage.getItem('admin');
+    const saved = localStorage.getItem('abracadabra_admin_user');
     try {
       return saved ? JSON.parse(saved) : null;
     } catch {
@@ -14,13 +14,15 @@ export function AuthProvider({ children }) {
   });
 
   const login = (newToken, adminData) => {
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('admin', JSON.stringify(adminData));
+    localStorage.setItem('abracadabra_admin_token', newToken);
+    localStorage.setItem('abracadabra_admin_user', JSON.stringify(adminData));
     setToken(newToken);
     setAdmin(adminData);
   };
 
   const logout = () => {
+    localStorage.removeItem('abracadabra_admin_token');
+    localStorage.removeItem('abracadabra_admin_user');
     localStorage.removeItem('token');
     localStorage.removeItem('admin');
     setToken(null);
